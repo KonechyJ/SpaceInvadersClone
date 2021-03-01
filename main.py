@@ -8,6 +8,7 @@ SCREEN_SIZE = (800, 600)  # setting up the game at original state for window siz
 GREEN = (0, 255, 0)  # necessary for the start of the game
 YELLOW = (255, 255, 0)
 BLACK = (0, 0, 0)
+WHITE = (255, 255, 255)
 CLOCK = pygame.time.Clock()
 SCORE = 0
 LIFE = 3
@@ -19,7 +20,7 @@ class Bullet():
         self.surface = surface
         self.x = x_coord + 24
         self.y = y_coord
-        self.image = pygame.image.load('Bullet.png')
+        self.image = pygame.image.load('ShipBullet.png')
         return
 
     def update(self, y_amount=5):
@@ -35,7 +36,7 @@ class EnemyBullet():
         self.surface = surface
         self.x = x_coord + 12
         self.y = y_coord
-        self.image = pygame.image.load('Bullet.png')
+        self.image = pygame.image.load('Alien Bullet.png')
         return
 
     def update(self, y_amount=5):
@@ -103,7 +104,10 @@ class SpaceInvadersGame(object):
         self.score = score
         self.life = life
 
-        label = myfont.render("Press ENTER to start game", 1, YELLOW)
+        title = myfont.render("Space Invaders!", 1, WHITE)
+        self.surface.blit(title, (100, 50))
+
+        label = myfont.render("Press ENTER to start game", 1, WHITE)
         self.surface.blit(label, (100, 100))
         self.draw_player()
         pygame.display.flip()  # updating the display surface to screen, after drawing

@@ -46,6 +46,7 @@ class EnemyBullet:
 
 
 # drawing the enemy and placement of the enemy, includes movement
+# Here consider making three enenmy classes so that game can make different aliens based on frames
 class Enemy:
     def __init__(self, x_coord, y_coord, points):  # placement of enemy, in terms of x and y coords
         self.x = x_coord
@@ -72,9 +73,9 @@ def check_collision(object1_x, object1_y, object2_x, object2_y):
     return False
 
 
-def generate_enemies():  # creating the enemies, in a 1D array    *******************************
+def generate_enemies():  # creating the enemies, in a 1D array
     matrix = []
-    for y in range(5):  # looping through the enemies, assigning points on difficulty for player to be rewarded
+    for y in range(5):
         if y == 0:
             points = 30  # giving the enemies of higher position (closer to the very top) more points rewarded
         elif y == 1 or y == 2:
@@ -176,10 +177,30 @@ class SpaceInvadersGame(object):
 
         title1 = myfont.render("Space", 1, WHITE)
         title2 = myfont.render("Invaders!", 1, GREEN)
+        score = myfont.render("Your HighScore: {}".format(self.score), 1, WHITE)
+
+        alien1 = pygame.image.load("Images/Alien1F1.png")
+        alien2 = pygame.image.load("Images/Alien2F1.png")
+        alien3 = pygame.image.load("Images/Alien3F1.png")
+        alien4 = pygame.image.load("Images/SaucerF1.png")
         self.surface.blit(title1, (100, 50))
         self.surface.blit(title2, (100, 75))
-        #self.surface.blit(self.score, (100, 100))
-        #pygame.image.load("Images/Alien1F1.png")
+        self.surface.blit(score, (100, 120))
+
+        AlienScore1 = myfont.render(" = 10", 1, WHITE)
+        AlienScore2 = myfont.render(" = 20", 1, WHITE)
+        AlienScore3 = myfont.render(" = 30", 1, WHITE)
+        AlienScore4 = myfont.render(" = ???", 1, WHITE)
+
+        self.surface.blit(AlienScore1, (150, 200))
+        self.surface.blit(AlienScore2, (150, 250))
+        self.surface.blit(AlienScore3, (150, 300))
+        self.surface.blit(AlienScore4, (150, 350))
+
+        self.surface.blit(alien1, (100, 200))
+        self.surface.blit(alien2, (100, 250))
+        self.surface.blit(alien3, (100, 300))
+        self.surface.blit(alien4, (100, 350))
 
         label = myfont.render("Press ENTER to start game", 1, WHITE)
         self.surface.blit(label, (100, 500))
@@ -210,10 +231,8 @@ class SpaceInvadersGame(object):
                 if event.type == KEYDOWN and event.key == K_y:  # if user decides to play a new game, run the whole
                     SpaceInvadersGame()  # game again by calling the main function
                 if (event.type == QUIT or
-                        (
-                                event.type == KEYDOWN and event.key == K_ESCAPE) or  # exit the game if user decides to not play a new game
-                        (event.type == KEYDOWN and event.key == K_n)
-                ):
+                        (event.type == KEYDOWN and event.key == K_ESCAPE) or  # exit the game if user decides to not play a new game
+                        (event.type == KEYDOWN and event.key == K_n)):
                     exit()
 
     def continue_screen(self):  # continuation screen, displays the next actions available to move on

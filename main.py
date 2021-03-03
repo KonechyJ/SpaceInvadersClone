@@ -11,7 +11,7 @@ BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 CLOCK = pygame.time.Clock()
 SCORE = 0
-LIFE = 3
+LIFE = 1
 
 # bullets class for the user, deals with position and visual image of bullets
 class Bullet:
@@ -86,11 +86,28 @@ def generate_enemies():  # creating the enemies, in a 1D array
 
 
 class Enemy:
+
+    # images0 = [pygame.image.load('Images/Alien1F1.png'), pygame.image.load('Images/Alien1F2.png'),
+    #            pygame.image.load('Images/Alien1F3.png')]
+    # images1 = [pygame.image.load('Images/Alien2F1.png'), pygame.image.load('Images/Alien2F2.png'),
+    #            pygame.image.load('Images/Alien2F3.png')]
+    # images2 = [pygame.image.load('Images/Alien3F1.png'), pygame.image.load('Images/Alien3F2.png'),
+    #            pygame.image.load('Images/Alien3F3.png')]
+    # images3 = [pygame.image.load('Images/Alien3F1.png'), pygame.image.load('Images/Alien3F2.png'),
+    #            pygame.image.load('Images/Alien3F3.png')]
+    #
+    #
+    # timer0 = Timer(frames=images0, wait=500)
+    # timer1 = Timer(frames=images0, wait=500)
+    # timer2 = Timer(frames=images1, wait=500)
+    # timer3 = Timer(frames=images3, wait=500)
+    # timers = [timer0, timer1, timer2, timer3]
+
     def __init__(self, x_coord, y_coord, points):  # placement of enemy, in terms of x and y coords
         self.x = x_coord
         self.y = y_coord
         self.points = points
-        self.image = pygame.image.load('Alien1F1.png')  # upload image of enemy onto the screen
+        self.image = pygame.image.load('Images/Alien1F1.png')  # upload image of enemy onto the screen
         self.speed = 3  # setting the speed of the enemy's movement, helps change the position
         return
 
@@ -214,7 +231,7 @@ class SpaceInvadersGame(object):
 
         title1 = myfont.render("Space", 1, WHITE)
         title2 = myfont.render("Invaders!", 1, GREEN)
-        score = myfont.render("Your HighScore: {}".format(self.score), 1, WHITE)
+        highscore = myfont.render("Your HighScore: {}".format(self.score), 1, WHITE)
 
         alien1 = pygame.image.load("Images/Alien1F1.png")
         alien2 = pygame.image.load("Images/Alien2F1.png")
@@ -222,7 +239,7 @@ class SpaceInvadersGame(object):
         alien4 = pygame.image.load("Images/SaucerF1.png")
         self.surface.blit(title1, (100, 50))
         self.surface.blit(title2, (100, 75))
-        self.surface.blit(score, (100, 120))
+        self.surface.blit(highscore, (100, 120))
 
         AlienScore1 = myfont.render(" = 10", 1, WHITE)
         AlienScore2 = myfont.render(" = 20", 1, WHITE)
@@ -243,6 +260,8 @@ class SpaceInvadersGame(object):
         self.surface.blit(label, (100, 500))
         self.draw_player()
         pygame.display.flip()  # updating the display surface to screen, after drawing
+
+        # Here set SCore = score but only after the the while loop close
 
         while True:
             for event in pygame.event.get():
@@ -402,7 +421,11 @@ class SpaceInvadersGame(object):
             if not any(self.enemies_matrix):  # display the next set of instructions, once all enemies are defeated
                 self.continue_screen()
 
+
+        SCORE = self.score
         self.game_over_screen()
+
+
 
 
 if __name__ == '__main__':

@@ -13,14 +13,13 @@ CLOCK = pygame.time.Clock()
 SCORE = 0
 LIFE = 3
 
-
 # bullets class for the user, deals with position and visual image of bullets
 class Bullet:
     def __init__(self, surface, x_coord, y_coord):  # setting the position of bullets and loading the image for visuals
         self.surface = surface
         self.x = x_coord + 24
         self.y = y_coord
-        self.image = pygame.image.load('ShipBullet.png')
+        self.image = pygame.image.load('Images/ShipBullet.png')
         return
 
     def update(self, y_amount=5):
@@ -29,14 +28,13 @@ class Bullet:
                           (self.x, self.y))  # updates the position of the laser, appears to have the laser moving
         return
 
-
 # bullets class for enemy, deals with position and visual image for oponent
 class EnemyBullet:
     def __init__(self, surface, x_coord, y_coord):  # same idea to the bullets class, but for enemys
         self.surface = surface
         self.x = x_coord + 12
         self.y = y_coord
-        self.image = pygame.image.load('Alien Bullet.png')
+        self.image = pygame.image.load('Images/Alien Bullet.png')
         return
 
     def update(self, y_amount=5):
@@ -46,13 +44,13 @@ class EnemyBullet:
 
 
 # drawing the enemy and placement of the enemy, includes movement
-# Here consider making three enenmy classes so that game can make different aliens based on frames
+#TODO Here consider making three enenmy classes so that game can make different aliens based on frames
 class Enemy:
     def __init__(self, x_coord, y_coord, points):  # placement of enemy, in terms of x and y coords
         self.x = x_coord
         self.y = y_coord
         self.points = points
-        self.image = pygame.image.load('Alien1F1T.png')  # upload image of enemy onto the screen
+        self.image = pygame.image.load('Alien1F1.png')  # upload image of enemy onto the screen
         self.speed = 3  # setting the speed of the enemy's movement, helps change the position
         return
 
@@ -67,8 +65,47 @@ class Enemy:
 # checking to see if two objects collide with one another
 def check_collision(object1_x, object1_y, object2_x, object2_y):
     if ((object1_x > object2_x) and (object1_x < object2_x + 35) and
-            (object1_y > object2_y) and (object1_y < object2_y + 35)
-    ):
+            (object1_y > object2_y) and (object1_y < object2_y + 35)):
+        return True
+    return False
+
+
+def generate_enemies():  # creating the enemies, in a 1D array
+    matrix = []
+    for y in range(2):
+        if y == 0:
+            points = 30  # giving the enemies of higher position (closer to the very top) more points rewarded
+        elif y == 1 or y == 2:
+            points = 20
+        else:
+            points = 10
+        # Range in this line changes how many horinzontally
+        enemies = [Enemy(80 + (40 * x), 50 + (50 * y), points) for x in range(11)]
+        matrix.append(enemies)
+    return matrix
+
+
+class Enemy:
+    def __init__(self, x_coord, y_coord, points):  # placement of enemy, in terms of x and y coords
+        self.x = x_coord
+        self.y = y_coord
+        self.points = points
+        self.image = pygame.image.load('Alien1F1.png')  # upload image of enemy onto the screen
+        self.speed = 3  # setting the speed of the enemy's movement, helps change the position
+        return
+
+    def update(self, surface, dirx, y_amount=0):  # updating the movement of the enemy
+        self.x += (dirx * self.speed)  # multiplying the x value by the speed, increasing the x value by 3 each time
+        self.y += y_amount
+        surface.blit(self.image,
+                     (self.x, self.y))  # movement of enemy, drawing the same image onto itself, according to the
+        return
+
+
+# checking to see if two objects collide with one another
+def check_collision(object1_x, object1_y, object2_x, object2_y):
+    if ((object1_x > object2_x) and (object1_x < object2_x + 35) and
+            (object1_y > object2_y) and (object1_y < object2_y + 35)):
         return True
     return False
 
@@ -82,12 +119,12 @@ def generate_enemies():  # creating the enemies, in a 1D array
             points = 20
         else:
             points = 10
-
+        # Range in this line changes how many horinzontally
         enemies = [Enemy(80 + (40 * x), 50 + (50 * y), points) for x in range(11)]
         matrix.append(enemies)
     return matrix
 
-#Timer class added to try and implement animations
+#TODO Timer class added to try and implement animations
 
 class Timer:
     def __init__(self, frames, wait=100, frameindex=0, step=1, looponce=False):    # imagerect frames
@@ -156,7 +193,7 @@ class TimerDual:
 #        print('idx: ' + str(idx))
         return self.timer.frames[idx]
 
-#End of timer script
+#TODO End of timer script
 
 
 class SpaceInvadersGame(object):
@@ -213,8 +250,7 @@ class SpaceInvadersGame(object):
                     self.gamestate = 1
                     self.loop()  # calling the function that takes care of the state of game
                 if (event.type == QUIT or  # taking in the keyboard input, exiting the game if
-                        (event.type == KEYDOWN and event.key == K_ESCAPE)  # user presses escape key
-                ):
+                        (event.type == KEYDOWN and event.key == K_ESCAPE)): # user presses escape key
                     exit()
 
     def game_over_screen(self):  # displaying the end result, and actions that can be done after the game is complete
@@ -249,15 +285,14 @@ class SpaceInvadersGame(object):
                     SpaceInvadersGame(score=self.score, life=self.life)
                 if (event.type == QUIT or  # user decides to not continue playing, exits
                         (event.type == KEYDOWN and event.key == K_ESCAPE) or
-                        (event.type == KEYDOWN and event.key == K_n)
-                ):
+                        (event.type == KEYDOWN and event.key == K_n)):
                     exit()
 
     def game_exit(self):
         exit()
 
     def draw_player(self):  # function to render player, to be drawn on the display screen
-        self.player = pygame.image.load("PlayerShip.png")  # upload image of player to be displayed, set speed and size
+        self.player = pygame.image.load("Images/PlayerShip.png")  # upload image of player to be displayed, set speed and size
         self.speed = 5
         self.player_x = SCREEN_SIZE[0] / 2 - 25
         self.player_y = SCREEN_SIZE[1] - 75
@@ -339,8 +374,7 @@ class SpaceInvadersGame(object):
                     self.enemies_bullets.remove(enemy_bullet)
 
                 if (check_collision(enemy_bullet.x, enemy_bullet.y, self.player_x, self.player_y) and
-                        enemy_bullet in self.enemies_bullets  # checking to see if the enemy's bullet hit player, if yes
-                ):  # then hit is successful and a life is lost
+                        enemy_bullet in self.enemies_bullets):  # checking to see if the enemy's bullet hit player, if yes then hit is successful and a life is lost
                     self.enemies_bullets.remove(enemy_bullet)
                     self.life -= 1
 
@@ -351,10 +385,8 @@ class SpaceInvadersGame(object):
 
                 for enemies in self.enemies_matrix:
                     for enemy in enemies:
-                        if (check_collision(bullet.x, bullet.y, enemy.x,
-                                            enemy.y)  # checking to see if user's bullet hit enemy
-                                and bullet in self.bullets_array  # if yes, "kill" enemy and remove from screen
-                        ):
+                        if (check_collision(bullet.x, bullet.y, enemy.x, enemy.y)  #.y checking to see if user's bullet hit enemy
+                                and bullet in self.bullets_array):  # if yes, "kill" enemy and remove from screen
                             self.score += enemy.points  # update points/score user receives
                             enemies.remove(enemy)
                             self.bullets_array.remove(bullet)

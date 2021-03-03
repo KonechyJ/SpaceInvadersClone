@@ -1,11 +1,11 @@
 from sys import exit
-import random  # importing random library, necessary for generating random enemies throughout the game
+import random
 
-import pygame  # making use of all the availible pygame modules
+import pygame
 from pygame.locals import *
 
 SCREEN_SIZE = (800, 600)  # setting up the game at original state for window size, players, time, score and life
-GREEN = (0, 255, 0)  # necessary for the start of the game
+GREEN = (0, 255, 0)  # colors
 YELLOW = (255, 255, 0)
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
@@ -15,7 +15,7 @@ LIFE = 3
 
 
 # bullets class for the user, deals with position and visual image of bullets
-class Bullet():
+class Bullet:
     def __init__(self, surface, x_coord, y_coord):  # setting the position of bullets and loading the image for visuals
         self.surface = surface
         self.x = x_coord + 24
@@ -31,7 +31,7 @@ class Bullet():
 
 
 # bullets class for enemy, deals with position and visual image for oponent
-class EnemyBullet():
+class EnemyBullet:
     def __init__(self, surface, x_coord, y_coord):  # same idea to the bullets class, but for enemys
         self.surface = surface
         self.x = x_coord + 12
@@ -46,7 +46,7 @@ class EnemyBullet():
 
 
 # drawing the enemy and placement of the enemy, includes movement
-class Enemy():
+class Enemy:
     def __init__(self, x_coord, y_coord, points):  # placement of enemy, in terms of x and y coords
         self.x = x_coord
         self.y = y_coord
@@ -60,7 +60,6 @@ class Enemy():
         self.y += y_amount
         surface.blit(self.image,
                      (self.x, self.y))  # movement of enemy, drawing the same image onto itself, according to the
-        # x and y position
         return
 
 
@@ -87,6 +86,77 @@ def generate_enemies():  # creating the enemies, in a 1D array    **************
         matrix.append(enemies)
     return matrix
 
+#Timer class added to try and implement animations
+
+class Timer:
+    def __init__(self, frames, wait=100, frameindex=0, step=1, looponce=False):    # imagerect frames
+        self.frames = frames
+        self.wait = wait
+        self.frameindex = frameindex
+        self.step = step
+        self.looponce = looponce
+        self.finished = False
+        self.lastframe = len(frames) - 1 if step == 1 else 0
+        self.last = None
+    def frame_index(self):
+        now = pygame.time.get_ticks()
+        if self.last is None:
+            self.last = now
+            self.frameindex = 0 if self.step == 1 else len(self.frames) - 1
+            return 0
+        elif not self.finished and now - self.last > self.wait:
+            self.frameindex += self.step
+            if self.looponce and self.frameindex == self.lastframe:
+                self.finished = True
+            else:
+                self.frameindex %= len(self.frames)
+            self.last = now
+        return self.frameindex
+
+    def reset(self):
+        self.last = None
+        self.finished = False
+
+    def __str__(self): return 'Timer(frames=' + self.frames +\
+                              ', wait=' + str(self.wait) + ', index=' + str(self.frameindex) + ')'
+
+    def imagerect(self):
+        return self.frames[self.frame_index()]
+
+
+class TimerDual:
+    def __init__(self, frames1, frames2, wait1=100, wait2=100, wait_switch_timers=1000,
+                 frameindex1=0, frameindex2=0, step1=1, step2=1, looponce=False):
+
+        self.wait_switch_timers = wait_switch_timers
+        self.timer1 = Timer(frames1, wait1, frameindex1, step1, looponce)
+        self.timer2 = Timer(frames2, wait2, frameindex2, step2, looponce)
+        self.timer = self.timer1   # start with timer1
+
+        self.now = pygame.time.get_ticks()
+        self.lastswitch = self.now
+
+    def frame_index(self):
+        now = pygame.time.get_ticks()
+        if now - self.lastswitch > self.wait_switch_timers:
+            self.timer = self.timer2 if self.timer == self.timer1 else self.timer1
+            self.lastswitch = now
+        return self.timer.frame_index()
+
+    def reset(self):
+        self.timer1.reset()
+        self.timer2.reset()
+        self.timer = self.timer1
+
+    def __str__(self): return 'TimerDual(' + str(self.timer1) + ',' + str(self.timer2) + ')'
+
+    def imagerect(self):
+        idx = self.frame_index()
+#        print('idx: ' + str(idx))
+        return self.timer.frames[idx]
+
+#End of timer script
+
 
 class SpaceInvadersGame(object):
     def __init__(self, score: object = SCORE, life: object = LIFE) -> object:  # setting up the initial game, window screen user will see
@@ -97,18 +167,22 @@ class SpaceInvadersGame(object):
         # flickering between screens as other routines are drawn
         self.surface = pygame.display.set_mode(SCREEN_SIZE, flag)
         self.surface.fill(BLACK)  # initializing all the start values of the beginning of game
-        myfont = pygame.font.Font(None, 15)
+        myfont = pygame.font.Font(None, 40)
         self.bullets_array = []
         self.enemies_matrix = generate_enemies()
         self.enemies_bullets = []
         self.score = score
         self.life = life
 
-        title = myfont.render("Space Invaders!", 1, WHITE)
-        self.surface.blit(title, (100, 50))
+        title1 = myfont.render("Space", 1, WHITE)
+        title2 = myfont.render("Invaders!", 1, GREEN)
+        self.surface.blit(title1, (100, 50))
+        self.surface.blit(title2, (100, 75))
+        #self.surface.blit(self.score, (100, 100))
+        #pygame.image.load("Images/Alien1F1.png")
 
         label = myfont.render("Press ENTER to start game", 1, WHITE)
-        self.surface.blit(label, (100, 100))
+        self.surface.blit(label, (100, 500))
         self.draw_player()
         pygame.display.flip()  # updating the display surface to screen, after drawing
 
@@ -161,8 +235,7 @@ class SpaceInvadersGame(object):
                     exit()
 
     def game_exit(self):
-        """ funkcja przerywa dzialanie gry i wychodzi do systemu"""
-        exit()  # function interrupts the action of the game and goes into the system
+        exit()
 
     def draw_player(self):  # function to render player, to be drawn on the display screen
         self.player = pygame.image.load("PlayerShip.png")  # upload image of player to be displayed, set speed and size
@@ -175,7 +248,7 @@ class SpaceInvadersGame(object):
         self.player_y = self.player_y + (diry * self.speed)  # and current position in terms of x and y coords
 
     def loop(self):
-        """ glowna petla gry """  # main loop of game
+         # main loop of game
         can_shoot = True  # setting booleans to restrict the user from shooting if they run out of bullets
         fire_wait = 500  # necessary for restricting player from continously shooting, reload timer
         enemy_can_shoot = True

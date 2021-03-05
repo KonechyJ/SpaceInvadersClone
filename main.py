@@ -1,6 +1,7 @@
 from sys import exit
 import random
 
+import game as game
 import pygame
 from pygame.locals import *
 
@@ -28,9 +29,9 @@ class Bullet:
                           (self.x, self.y))  # updates the position of the laser, appears to have the laser moving
         return
 
-# bullets class for enemy, deals with position and visual image for oponent
+# bullets class for enemy, deals with position
 class EnemyBullet:
-    def __init__(self, surface, x_coord, y_coord):  # same idea to the bullets class, but for enemys
+    def __init__(self, surface, x_coord, y_coord):  # same idea to the bullets class
         self.surface = surface
         self.x = x_coord + 12
         self.y = y_coord
@@ -42,11 +43,9 @@ class EnemyBullet:
         self.surface.blit(self.image, (self.x, self.y))
         return
 
-
 # drawing the enemy and placement of the enemy, includes movement
-
 class Enemy:
-    def __init__(self, x_coord, y_coord, points):  # placement of enemy, in terms of x and y coords
+    def __init__(self, x_coord, y_coord, points):  # placement of enemy, in terms of x and y cords
         self.x = x_coord
         self.y = y_coord
         self.points = points
@@ -142,12 +141,8 @@ def generate_enemies():  # creating the enemies, in a 1D array
 #     return matrix
 
 
-#TODO martian class
-
-# class Saucer:
-
-
-
+# #TODO martian class
+# class Saucer():
 
 #TODO Timer class added to try and implement animations
 
@@ -186,7 +181,6 @@ class Timer:
     def imagerect(self):
         return self.frames[self.frame_index()]
 
-
 class TimerDual:
     def __init__(self, frames1, frames2, wait1=100, wait2=100, wait_switch_timers=1000,
                  frameindex1=0, frameindex2=0, step1=1, step2=1, looponce=False):
@@ -219,7 +213,6 @@ class TimerDual:
         return self.timer.frames[idx]
 
 #TODO End of timer script
-
 
 class SpaceInvadersGame(object):
     def __init__(self, score: object = SCORE, life: object = LIFE) -> object:  # setting up the initial game, window screen user will see
@@ -269,7 +262,8 @@ class SpaceInvadersGame(object):
         self.draw_player()
         pygame.display.flip()  # updating the display surface to screen, after drawing
 
-
+        #TODO music here
+        #record different segments
 
         while True:
             for event in pygame.event.get():
@@ -284,6 +278,9 @@ class SpaceInvadersGame(object):
         myfont = pygame.font.Font(None, 15)
         label = myfont.render("Press Y to restart game, N to exit", 1, YELLOW)
         score = myfont.render("You finished with score: {}".format(self.score), 1, YELLOW)
+        with open('HighScore.txt', 'a') as f:
+            f.write(f'HighSCore: {self.score}\n ')
+
         self.surface.fill(BLACK)
         self.surface.blit(label, (100, 100))  # displaying the instructions for restarting or exiting game
         self.surface.blit(score, (100, 120))
@@ -429,12 +426,7 @@ class SpaceInvadersGame(object):
             if not any(self.enemies_matrix):  # display the next set of instructions, once all enemies are defeated
                 self.continue_screen()
 
-
-        SCORE = self.score
         self.game_over_screen()
-
-
-
 
 if __name__ == '__main__':
     SpaceInvadersGame()  # running the main function of the loop, to start the game

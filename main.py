@@ -44,65 +44,8 @@ class EnemyBullet:
 
 
 # drawing the enemy and placement of the enemy, includes movement
-#TODO Here consider making three enenmy classes so that game can make different aliens based on frames
-class Enemy:
-    def __init__(self, x_coord, y_coord, points):  # placement of enemy, in terms of x and y coords
-        self.x = x_coord
-        self.y = y_coord
-        self.points = points
-        self.image = pygame.image.load('Alien1F1.png')  # upload image of enemy onto the screen
-        self.speed = 3  # setting the speed of the enemy's movement, helps change the position
-        return
-
-    def update(self, surface, dirx, y_amount=0):  # updating the movement of the enemy
-        self.x += (dirx * self.speed)  # multiplying the x value by the speed, increasing the x value by 3 each time
-        self.y += y_amount
-        surface.blit(self.image,
-                     (self.x, self.y))  # movement of enemy, drawing the same image onto itself, according to the
-        return
-
-
-# checking to see if two objects collide with one another
-def check_collision(object1_x, object1_y, object2_x, object2_y):
-    if ((object1_x > object2_x) and (object1_x < object2_x + 35) and
-            (object1_y > object2_y) and (object1_y < object2_y + 35)):
-        return True
-    return False
-
-
-def generate_enemies():  # creating the enemies, in a 1D array
-    matrix = []
-    for y in range(2):
-        if y == 0:
-            points = 30  # giving the enemies of higher position (closer to the very top) more points rewarded
-        elif y == 1 or y == 2:
-            points = 20
-        else:
-            points = 10
-        # Range in this line changes how many horinzontally
-        enemies = [Enemy(80 + (40 * x), 50 + (50 * y), points) for x in range(11)]
-        matrix.append(enemies)
-    return matrix
-
 
 class Enemy:
-
-    # images0 = [pygame.image.load('Images/Alien1F1.png'), pygame.image.load('Images/Alien1F2.png'),
-    #            pygame.image.load('Images/Alien1F3.png')]
-    # images1 = [pygame.image.load('Images/Alien2F1.png'), pygame.image.load('Images/Alien2F2.png'),
-    #            pygame.image.load('Images/Alien2F3.png')]
-    # images2 = [pygame.image.load('Images/Alien3F1.png'), pygame.image.load('Images/Alien3F2.png'),
-    #            pygame.image.load('Images/Alien3F3.png')]
-    # images3 = [pygame.image.load('Images/Alien3F1.png'), pygame.image.load('Images/Alien3F2.png'),
-    #            pygame.image.load('Images/Alien3F3.png')]
-    #
-    #
-    # timer0 = Timer(frames=images0, wait=500)
-    # timer1 = Timer(frames=images0, wait=500)
-    # timer2 = Timer(frames=images1, wait=500)
-    # timer3 = Timer(frames=images3, wait=500)
-    # timers = [timer0, timer1, timer2, timer3]
-
     def __init__(self, x_coord, y_coord, points):  # placement of enemy, in terms of x and y coords
         self.x = x_coord
         self.y = y_coord
@@ -126,7 +69,7 @@ def check_collision(object1_x, object1_y, object2_x, object2_y):
         return True
     return False
 
-
+#TODO maybe draw images inside here since this function is already differentiating by point
 def generate_enemies():  # creating the enemies, in a 1D array
     matrix = []
     for y in range(5):
@@ -140,6 +83,71 @@ def generate_enemies():  # creating the enemies, in a 1D array
         enemies = [Enemy(80 + (40 * x), 50 + (50 * y), points) for x in range(11)]
         matrix.append(enemies)
     return matrix
+
+
+# class Enemy:
+#
+#     # images0 = [pygame.image.load('Images/Alien1F1.png'), pygame.image.load('Images/Alien1F2.png'),
+#     #            pygame.image.load('Images/Alien1F3.png')]
+#     # images1 = [pygame.image.load('Images/Alien2F1.png'), pygame.image.load('Images/Alien2F2.png'),
+#     #            pygame.image.load('Images/Alien2F3.png')]
+#     # images2 = [pygame.image.load('Images/Alien3F1.png'), pygame.image.load('Images/Alien3F2.png'),
+#     #            pygame.image.load('Images/Alien3F3.png')]
+#     # images3 = [pygame.image.load('Images/Alien3F1.png'), pygame.image.load('Images/Alien3F2.png'),
+#     #            pygame.image.load('Images/Alien3F3.png')]
+#     #
+#     #
+#     # timer0 = Timer(frames=images0, wait=500)
+#     # timer1 = Timer(frames=images0, wait=500)
+#     # timer2 = Timer(frames=images1, wait=500)
+#     # timer3 = Timer(frames=images3, wait=500)
+#     # timers = [timer0, timer1, timer2, timer3]
+#
+#     def __init__(self, x_coord, y_coord, points):  # placement of enemy, in terms of x and y coords
+#         self.x = x_coord
+#         self.y = y_coord
+#         self.points = points
+#         self.image = pygame.image.load('Images/Alien2F1.png')  # upload image of enemy onto the screen
+#         self.speed = 3  # setting the speed of the enemy's movement, helps change the position
+#         return
+#
+#     def update(self, surface, dirx, y_amount=0):  # updating the movement of the enemy
+#         self.x += (dirx * self.speed)  # multiplying the x value by the speed, increasing the x value by 3 each time
+#         self.y += y_amount
+#         surface.blit(self.image,
+#                      (self.x, self.y))  # movement of enemy, drawing the same image onto itself, according to the
+#         return
+#
+#
+# # checking to see if two objects collide with one another
+# def check_collision(object1_x, object1_y, object2_x, object2_y):
+#     if ((object1_x > object2_x) and (object1_x < object2_x + 35) and
+#             (object1_y > object2_y) and (object1_y < object2_y + 35)):
+#         return True
+#     return False
+#
+#
+# def generate_enemies():  # creating the enemies, in a 1D array
+#     matrix = []
+#     for y in range(5):
+#         if y == 0:
+#             points = 30  # giving the enemies of higher position (closer to the very top) more points rewarded
+#         elif y == 1 or y == 2:
+#             points = 20
+#         else:
+#             points = 10
+#         # Range in this line changes how many horinzontally
+#         enemies = [Enemy(80 + (40 * x), 50 + (50 * y), points) for x in range(11)]
+#         matrix.append(enemies)
+#     return matrix
+
+
+#TODO martian class
+
+# class Saucer:
+
+
+
 
 #TODO Timer class added to try and implement animations
 
@@ -261,7 +269,7 @@ class SpaceInvadersGame(object):
         self.draw_player()
         pygame.display.flip()  # updating the display surface to screen, after drawing
 
-        # Here set SCore = score but only after the the while loop close
+
 
         while True:
             for event in pygame.event.get():
@@ -284,7 +292,7 @@ class SpaceInvadersGame(object):
         while True:
             for event in pygame.event.get():  # taking in the keyboard input to decide on next action
                 if event.type == KEYDOWN and event.key == K_y:  # if user decides to play a new game, run the whole
-                    SpaceInvadersGame()  # game again by calling the main function
+                    SpaceInvadersGame(score=self.score)  # game again by calling the main function
                 if (event.type == QUIT or
                         (event.type == KEYDOWN and event.key == K_ESCAPE) or  # exit the game if user decides to not play a new game
                         (event.type == KEYDOWN and event.key == K_n)):

@@ -12,7 +12,7 @@ BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 CLOCK = pygame.time.Clock()
 SCORE = 0
-LIFE = 1
+LIFE = 3
 
 # bullets class for the user, deals with position and visual image of bullets
 class Bullet:

@@ -1,7 +1,7 @@
 from sys import exit
+from pygame import mixer
 import random
 
-import game as game
 import pygame
 from pygame.locals import *
 
@@ -68,7 +68,6 @@ def check_collision(object1_x, object1_y, object2_x, object2_y):
         return True
     return False
 
-#TODO maybe draw images inside here since this function is already differentiating by point
 def generate_enemies():  # creating the enemies, in a 1D array
     matrix = []
     for y in range(5):
@@ -78,12 +77,11 @@ def generate_enemies():  # creating the enemies, in a 1D array
             points = 20
         else:
             points = 10
-        # Range in this line changes how many horinzontally
+        # Range in this line changes how many horizontally
         enemies = [Enemy(80 + (40 * x), 50 + (50 * y), points) for x in range(11)]
         matrix.append(enemies)
     return matrix
-
-
+# Test enemy class to use animation frames: UNFINISHED
 # class Enemy:
 #
 #     # images0 = [pygame.image.load('Images/Alien1F1.png'), pygame.image.load('Images/Alien1F2.png'),
@@ -141,76 +139,75 @@ def generate_enemies():  # creating the enemies, in a 1D array
 #     return matrix
 
 
-# #TODO martian class
-# class Saucer():
+#TODO martian class
 
 #TODO Timer class added to try and implement animations
 
-class Timer:
-    def __init__(self, frames, wait=100, frameindex=0, step=1, looponce=False):    # imagerect frames
-        self.frames = frames
-        self.wait = wait
-        self.frameindex = frameindex
-        self.step = step
-        self.looponce = looponce
-        self.finished = False
-        self.lastframe = len(frames) - 1 if step == 1 else 0
-        self.last = None
-    def frame_index(self):
-        now = pygame.time.get_ticks()
-        if self.last is None:
-            self.last = now
-            self.frameindex = 0 if self.step == 1 else len(self.frames) - 1
-            return 0
-        elif not self.finished and now - self.last > self.wait:
-            self.frameindex += self.step
-            if self.looponce and self.frameindex == self.lastframe:
-                self.finished = True
-            else:
-                self.frameindex %= len(self.frames)
-            self.last = now
-        return self.frameindex
-
-    def reset(self):
-        self.last = None
-        self.finished = False
-
-    def __str__(self): return 'Timer(frames=' + self.frames +\
-                              ', wait=' + str(self.wait) + ', index=' + str(self.frameindex) + ')'
-
-    def imagerect(self):
-        return self.frames[self.frame_index()]
-
-class TimerDual:
-    def __init__(self, frames1, frames2, wait1=100, wait2=100, wait_switch_timers=1000,
-                 frameindex1=0, frameindex2=0, step1=1, step2=1, looponce=False):
-
-        self.wait_switch_timers = wait_switch_timers
-        self.timer1 = Timer(frames1, wait1, frameindex1, step1, looponce)
-        self.timer2 = Timer(frames2, wait2, frameindex2, step2, looponce)
-        self.timer = self.timer1   # start with timer1
-
-        self.now = pygame.time.get_ticks()
-        self.lastswitch = self.now
-
-    def frame_index(self):
-        now = pygame.time.get_ticks()
-        if now - self.lastswitch > self.wait_switch_timers:
-            self.timer = self.timer2 if self.timer == self.timer1 else self.timer1
-            self.lastswitch = now
-        return self.timer.frame_index()
-
-    def reset(self):
-        self.timer1.reset()
-        self.timer2.reset()
-        self.timer = self.timer1
-
-    def __str__(self): return 'TimerDual(' + str(self.timer1) + ',' + str(self.timer2) + ')'
-
-    def imagerect(self):
-        idx = self.frame_index()
-#        print('idx: ' + str(idx))
-        return self.timer.frames[idx]
+# class Timer:
+#     def __init__(self, frames, wait=100, frameindex=0, step=1, looponce=False):    # imagerect frames
+#         self.frames = frames
+#         self.wait = wait
+#         self.frameindex = frameindex
+#         self.step = step
+#         self.looponce = looponce
+#         self.finished = False
+#         self.lastframe = len(frames) - 1 if step == 1 else 0
+#         self.last = None
+#     def frame_index(self):
+#         now = pygame.time.get_ticks()
+#         if self.last is None:
+#             self.last = now
+#             self.frameindex = 0 if self.step == 1 else len(self.frames) - 1
+#             return 0
+#         elif not self.finished and now - self.last > self.wait:
+#             self.frameindex += self.step
+#             if self.looponce and self.frameindex == self.lastframe:
+#                 self.finished = True
+#             else:
+#                 self.frameindex %= len(self.frames)
+#             self.last = now
+#         return self.frameindex
+#
+#     def reset(self):
+#         self.last = None
+#         self.finished = False
+#
+#     def __str__(self): return 'Timer(frames=' + self.frames +\
+#                               ', wait=' + str(self.wait) + ', index=' + str(self.frameindex) + ')'
+#
+#     def imagerect(self):
+#         return self.frames[self.frame_index()]
+#
+# class TimerDual:
+#     def __init__(self, frames1, frames2, wait1=100, wait2=100, wait_switch_timers=1000,
+#                  frameindex1=0, frameindex2=0, step1=1, step2=1, looponce=False):
+#
+#         self.wait_switch_timers = wait_switch_timers
+#         self.timer1 = Timer(frames1, wait1, frameindex1, step1, looponce)
+#         self.timer2 = Timer(frames2, wait2, frameindex2, step2, looponce)
+#         self.timer = self.timer1   # start with timer1
+#
+#         self.now = pygame.time.get_ticks()
+#         self.lastswitch = self.now
+#
+#     def frame_index(self):
+#         now = pygame.time.get_ticks()
+#         if now - self.lastswitch > self.wait_switch_timers:
+#             self.timer = self.timer2 if self.timer == self.timer1 else self.timer1
+#             self.lastswitch = now
+#         return self.timer.frame_index()
+#
+#     def reset(self):
+#         self.timer1.reset()
+#         self.timer2.reset()
+#         self.timer = self.timer1
+#
+#     def __str__(self): return 'TimerDual(' + str(self.timer1) + ',' + str(self.timer2) + ')'
+#
+#     def imagerect(self):
+#         idx = self.frame_index()
+# #        print('idx: ' + str(idx))
+#         return self.timer.frames[idx]
 
 #TODO End of timer script
 
@@ -262,9 +259,6 @@ class SpaceInvadersGame(object):
         self.draw_player()
         pygame.display.flip()  # updating the display surface to screen, after drawing
 
-        #TODO music here
-        #record different segments
-
         while True:
             for event in pygame.event.get():
                 if event.type == KEYDOWN and event.key == K_RETURN:  # hitting the enter key; setting bool to true, to start game
@@ -285,7 +279,7 @@ class SpaceInvadersGame(object):
         self.surface.blit(label, (100, 100))  # displaying the instructions for restarting or exiting game
         self.surface.blit(score, (100, 120))
         pygame.display.flip()  # updating display screen to show new instructions available to user
-
+        pygame.mixer.music.stop()
         while True:
             for event in pygame.event.get():  # taking in the keyboard input to decide on next action
                 if event.type == KEYDOWN and event.key == K_y:  # if user decides to play a new game, run the whole
@@ -303,6 +297,7 @@ class SpaceInvadersGame(object):
         self.surface.blit(label, (100, 100))
         self.surface.blit(score, (100, 120))
         pygame.display.flip()  # updating the display screen to show new instructions to continue or exit game
+        pygame.mixer.music.stop()
         while True:
             for event in pygame.event.get():
                 if event.type == KEYDOWN and event.key == K_RETURN:
@@ -334,11 +329,14 @@ class SpaceInvadersGame(object):
         moving = False
         myfont = pygame.font.Font(None, 20)
 
+        mixer.music.load('Sounds/528296__bloodpixel__space-journeyV3.wav')
+        mixer.music.play(11)
+        mixer.music.queue('Sounds/159401__noirenex__risingtideExtended.wav')
+
         while self.gamestate == 1:  # as long as the game is in play
             for event in pygame.event.get():  # taking in keyboard input, to determine next move
                 if (event.type == QUIT or
-                        (event.type == KEYDOWN and event.key == K_ESCAPE)  # user can exit
-                ):
+                        (event.type == KEYDOWN and event.key == K_ESCAPE)):    # user can exit
                     self.game_exit()
             keys = pygame.key.get_pressed()
 
@@ -349,6 +347,8 @@ class SpaceInvadersGame(object):
                 self.move(-1, 0)
 
             if keys[K_SPACE] and can_shoot:
+                laser_sound = mixer.Sound('Sounds/538721__eliot-beats__laser-shot.mp3')
+                laser_sound.play()
                 bullet = Bullet(self.surface, self.player_x, self.player_y)
                 self.bullets_array.append(bullet)  # user is shooting, takes into consideration position
                 can_shoot = False  # restricting user from shooting again
@@ -413,6 +413,8 @@ class SpaceInvadersGame(object):
                                 and bullet in self.bullets_array):  # if yes, "kill" enemy and remove from screen
                             self.score += enemy.points  # update points/score user receives
                             enemies.remove(enemy)
+                            explosion_sound = mixer.Sound('Sounds/399303__deleted-user-5405837__explosion-012.mp3')
+                            explosion_sound.play()
                             self.bullets_array.remove(bullet)
 
             score_label = myfont.render("Score: {}".format(self.score), 1, YELLOW)
